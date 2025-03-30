@@ -1,0 +1,15 @@
+.header {
+    position: fixed;
+    right: 50px;
+    top: 50px;
+    z-index: 1000;
+    font-family: "Alice";
+}
+
+.header .menu {
+    width: 480px;
+    height: 650px;
+    background-color: #f8f9fa; /* Light mode background */
+    border-radius: 25px;
+    position: relative;
+}
