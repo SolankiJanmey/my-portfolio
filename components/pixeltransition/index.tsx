@@ -94,7 +94,7 @@ export default function PixelTransition() {
       {/* Show the page title in the center */}
       {pageTitle && (
         <motion.div
-          className={`text-white ${alice.className}`}
+          className={`text-black ${alice.className}`}
           style={{
             position: "absolute",
             top: "50%",
