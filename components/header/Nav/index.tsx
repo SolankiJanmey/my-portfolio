@@ -20,14 +20,14 @@ export default function index() {
             <div key={`b_${i}`} className={styles.linkContainer}>
               <motion.div
                 // @ts-ignore
-                href={href}
+
                 custom={i}
                 variants={bubbleFloat}
                 initial="initial"
                 animate="enter"
                 exit="exit"
               >
-                <a>{title}</a>
+                <a href={href}>{title}</a>
               </motion.div>
             </div>
           );
@@ -44,6 +44,7 @@ export default function index() {
               animate="enter"
               exit="exit"
               key={`f_${i}`}
+              href={href}
             >
               {title}
             </motion.a>

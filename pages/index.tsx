@@ -63,7 +63,6 @@ export default function Home() {
       {!isLoading && (
         <div>
           <GridHeroSection scrollYProgress={scrollYProgress} />
-
           <About />
           <BlogsPage />
           <Contact />
