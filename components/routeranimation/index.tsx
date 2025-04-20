@@ -1,66 +1,32 @@
-// import { motion, AnimatePresence } from "framer-motion";
-// import { useState, useEffect } from "react";
-// import { useRouter } from "next/router";
-// import styles from "./style.module.scss";
-// import { slideUp } from "./anim";
-
-// export default function PixelTransition() {
-//   const [isComplete, setIsComplete] = useState(false);
-//   const router = useRouter();
-
-//   useEffect(() => {
-//     const isCompleteTimeout = setTimeout(() => {
-//       setIsComplete(false);
-//     }, 2000);
-//     isCompleteTimeout;
-
-//     return () => {
-//       clearTimeout(isCompleteTimeout);
-//     };
-//   }, []);
-
-//   const textVariants = {
-//     hidden: { opacity: 0, y: 20 },
-//     visible: (i: number) => ({
-//       opacity: 1,
-//       y: 0,
-//       transition: { delay: i * 0.15, duration: 1, ease: "easeInOut" },
-//     }),
-//   };
-
-//   return (
-//     <motion.div
-//       variants={slideUp}
-//       // exit="exit"
-//       transition={{
-//         duration: 1, // Adjust for smoothness
-//         ease: "easeInOut",
-//         delay: 5,
-//       }}
-//       className="h-screen w-screen flex items-center justify-center fixed z-[10000000000000000] overflow-hidden bg-white"
-//     >
-//       <motion.h1
-//         className="text-8xl font-semibold text-neutral-800"
-//         initial="hidden"
-//         animate="visible"
-//       >
-//         {"Janmey Solanki".split("").map((char, i) => (
-//           <motion.span key={i} custom={i} variants={textVariants}>
-//             {char === " " ? "\u00A0" : char}
-//           </motion.span>
-//         ))}
-//       </motion.h1>
-//     </motion.div>
-//   );
-// }
-
 import { motion, AnimatePresence } from "framer-motion";
 import { useState, useEffect } from "react";
 import { useRouter } from "next/router";
 import styles from "./style.module.scss";
 import { slideUp } from "./anim";
+import { sacramento } from "@/pages";
 
-const messages = ["About Me"];
+export const links = [
+  {
+    title: "Home",
+    href: "/",
+  },
+  {
+    title: "About Me",
+    href: "/about",
+  },
+  {
+    title: "Projects",
+    href: "/projects",
+  },
+  {
+    title: "Blogs",
+    href: "/blogs",
+  },
+  {
+    title: "Contact Me",
+    href: "/contact",
+  },
+];
 
 const RippleEffect = () => (
   <motion.div
@@ -172,21 +138,18 @@ export default function RouterAnimation({
 }: {
   isComplete: boolean;
 }) {
-  const [messageIndex, setMessageIndex] = useState(0);
   const [dimension, setDimension] = useState({ width: 0, height: 0 });
   const router = useRouter();
 
+  // Get the current route
+  const currentRoute = router.pathname;
+
+  // Find the matching title based on the current route
+  const matchingLink = links.find((link) => link.href === currentRoute);
+  const pageTitle = matchingLink ? matchingLink.title : "";
+
   useEffect(() => {
     setDimension({ width: window.innerWidth, height: window.innerHeight });
-    // router.push("/");
-  }, []);
-
-  useEffect(() => {
-    const messageInterval = setInterval(() => {
-      setMessageIndex((prev) => (prev + 1) % messages.length);
-    }, 2000);
-
-    return () => clearInterval(messageInterval);
   }, []);
 
   return (
@@ -197,21 +160,18 @@ export default function RouterAnimation({
         boxShadow: "0px",
       }}
       animate={{
-        borderRadius: isComplete ? "0px" : "0 0 60px 60px",
-        boxShadow: isComplete ? "0px" : "0px 10px 20px rgba(0, 0, 0, 0.1)",
+        borderRadius: "0 0 60px 60px",
+        boxShadow: "0px 10px 20px rgba(0, 0, 0, 0.1)",
       }}
       exit="exit"
       transition={{
         duration: 1, // Adjust for smoothness
         ease: "easeInOut",
-        delay: 5,
+        delay: 2,
       }}
-      className="h-screen w-screen flex items-center justify-center fixed z-[10000000000000000] overflow-hidden bg-white"
+      className={`h-screen w-screen flex items-center justify-center fixed z-[10000000000000000] overflow-hidden bg-white ${sacramento.className}`}
     >
-      <WaveForm
-        currentMessage={messages[messageIndex]}
-        isComplete={isComplete}
-      />
+      <WaveForm currentMessage={pageTitle} isComplete={isComplete} />
       {isComplete && <RippleEffect />}
 
       <motion.div

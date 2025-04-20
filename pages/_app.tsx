@@ -1,11 +1,12 @@
 import { CustomCursor } from "@/components/cursor.component";
-import RouterAnimation from "@/components/pixeltransition";
+import RouterAnimation from "@/components/routeranimation";
 import "@/styles/globals.css";
 import { motion, AnimatePresence } from "framer-motion";
 import type { AppProps } from "next/app";
 import Head from "next/head";
 import { useRouter } from "next/router";
-import { useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
+import Header from "@/components/header";
 
 export default function App({ Component, pageProps }: AppProps) {
   const router = useRouter();
@@ -37,10 +38,8 @@ export default function App({ Component, pageProps }: AppProps) {
         <CustomCursor />
       </div>
       <AnimatePresence mode="wait">
-        {router.pathname !== "/" && (
-          <motion.div key={router.pathname + "-transition"}>
-            {isComplete && <RouterAnimation isComplete={isComplete} />}
-          </motion.div>
+        {router.pathname !== "/" && isComplete && (
+          <RouterAnimation isComplete={isComplete} />
         )}
 
         <motion.div
@@ -49,6 +48,7 @@ export default function App({ Component, pageProps }: AppProps) {
           animate={{ opacity: 1 }}
           exit={{ opacity: 0 }}
         >
+          <Header />
           <Component {...pageProps} />
         </motion.div>
       </AnimatePresence>

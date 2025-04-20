@@ -59,7 +59,6 @@ export default function Home() {
       <AnimatePresence mode="wait">
         {isLoading && <Preloader />}
       </AnimatePresence>
-      <Header />
       {!isLoading && (
         <div>
           <GridHeroSection scrollYProgress={scrollYProgress} />

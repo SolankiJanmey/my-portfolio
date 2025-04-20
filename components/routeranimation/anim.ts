@@ -14,10 +14,10 @@ export const slideUp = {
   },
   entry: {
     top: "100vh",
-    transition: { duration: 0.1, ease: [0.76, 0, 0.24, 1], delay: 0.1 },
+    transition: { duration: 0.8, ease: [0.76, 0, 0.24, 1], delay: 0.1 },
   },
   exit: {
     top: "-100vh",
-    transition: { duration: 0.1, ease: [0.76, 0, 0.24, 1], delay: 0.1 },
+    transition: { duration: 0.8, ease: [0.76, 0, 0.24, 1], delay: 0.1 },
   },
 };
