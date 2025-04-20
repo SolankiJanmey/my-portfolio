@@ -10,7 +10,7 @@ import Contact from "@/components/contact";
 import Footer from "@/components/footer/Footer";
 import BlogsPage from "@/components/blog";
 
-const sacramento = Sacramento({
+export const sacramento = Sacramento({
   variable: "--font-sacramento",
   subsets: ["latin"],
   weight: "400",

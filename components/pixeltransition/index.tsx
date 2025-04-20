@@ -1,124 +1,246 @@
-import React, { useState, useEffect } from "react";
-import styles from "./style.module.scss";
-import { motion } from "framer-motion";
-import { useRouter } from "next/router";
-import { links } from "../header/Nav/data";
-import { alice } from "@/pages";
+// import { motion, AnimatePresence } from "framer-motion";
+// import { useState, useEffect } from "react";
+// import { useRouter } from "next/router";
+// import styles from "./style.module.scss";
+// import { slideUp } from "./anim";
 
-const anim = {
-  initial: {
-    opacity: 0,
-  },
-  open: (i: any) => ({
-    opacity: 1,
-    transition: { duration: 0, delay: 0.03 * i },
-  }),
-  closed: (i: any) => ({
-    opacity: 0,
-    transition: { duration: 0, delay: 0.03 * i },
-  }),
+// export default function PixelTransition() {
+//   const [isComplete, setIsComplete] = useState(false);
+//   const router = useRouter();
+
+//   useEffect(() => {
+//     const isCompleteTimeout = setTimeout(() => {
+//       setIsComplete(false);
+//     }, 2000);
+//     isCompleteTimeout;
+
+//     return () => {
+//       clearTimeout(isCompleteTimeout);
+//     };
+//   }, []);
+
+//   const textVariants = {
+//     hidden: { opacity: 0, y: 20 },
+//     visible: (i: number) => ({
+//       opacity: 1,
+//       y: 0,
+//       transition: { delay: i * 0.15, duration: 1, ease: "easeInOut" },
+//     }),
+//   };
+
+//   return (
+//     <motion.div
+//       variants={slideUp}
+//       // exit="exit"
+//       transition={{
+//         duration: 1, // Adjust for smoothness
+//         ease: "easeInOut",
+//         delay: 5,
+//       }}
+//       className="h-screen w-screen flex items-center justify-center fixed z-[10000000000000000] overflow-hidden bg-white"
+//     >
+//       <motion.h1
+//         className="text-8xl font-semibold text-neutral-800"
+//         initial="hidden"
+//         animate="visible"
+//       >
+//         {"Janmey Solanki".split("").map((char, i) => (
+//           <motion.span key={i} custom={i} variants={textVariants}>
+//             {char === " " ? "\u00A0" : char}
+//           </motion.span>
+//         ))}
+//       </motion.h1>
+//     </motion.div>
+//   );
+// }
+
+import { motion, AnimatePresence } from "framer-motion";
+import { useState, useEffect } from "react";
+import { useRouter } from "next/router";
+import styles from "./style.module.scss";
+import { slideUp } from "./anim";
+
+const messages = ["About Me"];
+
+const RippleEffect = () => (
+  <motion.div
+    className="absolute inset-0 flex items-center justify-center"
+    initial={{ opacity: 1 }}
+    animate={{ opacity: 0 }}
+    transition={{ duration: 1, delay: 0.2 }}
+  >
+    {[...Array(3)].map((_, i) => (
+      <motion.div
+        key={i}
+        className="absolute rounded-full border border-black/5"
+        initial={{ width: "100px", height: "100px", opacity: 0.5 }}
+        animate={{
+          width: "300vw",
+          height: "300vw",
+          opacity: 0,
+        }}
+        transition={{
+          duration: 1.5,
+          delay: i * 0.2,
+          ease: "easeOut",
+        }}
+      />
+    ))}
+  </motion.div>
+);
+
+const WaveForm = ({
+  currentMessage,
+  isComplete,
+}: {
+  currentMessage: string;
+  isComplete: boolean;
+}) => {
+  return (
+    <div className="absolute inset-0 flex items-center justify-center">
+      <motion.div
+        className="absolute w-full h-full flex items-center justify-center"
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        exit={{ opacity: 0 }}
+        transition={{ duration: 1 }}
+      >
+        {[...Array(3)].map((_, index) => (
+          <motion.div
+            key={index}
+            className="absolute w-96 h-96 border border-black/5"
+            style={{
+              rotate: index * 60,
+            }}
+            animate={{
+              scale: isComplete ? [1, 1.5, 2] : [1, 1.2, 1],
+              rotate: [index * 60, index * 60 + 360],
+              opacity: isComplete ? 0 : 1,
+              borderRadius: [
+                "30% 70% 70% 30% / 30% 30% 70% 70%",
+                "50% 50% 50% 50%",
+              ],
+            }}
+            transition={{
+              duration: isComplete ? 1 : 8,
+              repeat: isComplete ? 0 : Infinity,
+              repeatType: "reverse",
+              ease: "easeInOut",
+              delay: index * 0.4,
+            }}
+          />
+        ))}
+
+        <motion.div
+          className="absolute w-64 h-64 bg-gradient-to-br from-black/5 to-transparent"
+          animate={{
+            rotate: [0, 360],
+            scale: isComplete ? [0.8, 1.5, 2] : [0.8, 1, 0.8],
+            opacity: isComplete ? 0 : 1,
+            borderRadius: [
+              "30% 70% 70% 30% / 30% 30% 70% 70%",
+              "50% 50% 50% 50%",
+            ],
+          }}
+          transition={{
+            duration: isComplete ? 1 : 10,
+            repeat: isComplete ? 0 : Infinity,
+            repeatType: "reverse",
+            ease: "easeInOut",
+          }}
+        />
+
+        <AnimatePresence mode="wait">
+          <motion.div
+            key={currentMessage}
+            className="absolute text-5xl font-light text-black/30 text-center"
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: -20 }}
+            transition={{ duration: 0.5 }}
+          >
+            {currentMessage}
+          </motion.div>
+        </AnimatePresence>
+      </motion.div>
+    </div>
+  );
 };
 
-export default function PixelTransition() {
-  const [isNavigating, setIsNavigating] = useState(true);
-  const [hasCompletedTransition, setHasCompletedTransition] = useState(false);
+export default function RouterAnimation({
+  isComplete,
+}: {
+  isComplete: boolean;
+}) {
+  const [messageIndex, setMessageIndex] = useState(0);
+  const [dimension, setDimension] = useState({ width: 0, height: 0 });
   const router = useRouter();
 
-  // Get the current route
-  const currentRoute = router.pathname;
-
-  // Find the matching title based on the current route
-  const matchingLink = links.find((link) => link.href === currentRoute);
-  const pageTitle = matchingLink ? matchingLink.title : "";
-
-  console.log("pi", pageTitle, currentRoute, router.pathname);
-
   useEffect(() => {
-    // First timeout to finish navigating after 3 seconds
-    const navigatingTimeout = setTimeout(() => {
-      setIsNavigating(false);
-    }, 2000);
-
-    // Second timeout to hide the PixelTransition 1 second after navigating is complete
-    const transitionTimeout = setTimeout(() => {
-      setHasCompletedTransition(true);
-    }, 2500); // 3 seconds for navigation + 1 second buffer
-
-    // Cleanup
-    return () => {
-      clearTimeout(navigatingTimeout);
-      clearTimeout(transitionTimeout);
-    };
+    setDimension({ width: window.innerWidth, height: window.innerHeight });
+    // router.push("/");
   }, []);
 
-  /**
-   * Shuffles array in place (Fisher–Yates shuffle).
-   * @param {Array} a items An array containing the items.
-   */
-  const shuffle = (a: any) => {
-    let j, x, i;
-    for (i = a.length - 1; i > 0; i--) {
-      j = Math.floor(Math.random() * (i + 1));
-      x = a[i];
-      a[i] = a[j];
-      a[j] = x;
-    }
-    return a;
-  };
+  useEffect(() => {
+    const messageInterval = setInterval(() => {
+      setMessageIndex((prev) => (prev + 1) % messages.length);
+    }, 2000);
 
-  const getBlocks = () => {
-    const { innerWidth, innerHeight } = window;
-    const blockSize = innerWidth * 0.05;
-    const nbOfBlocks = Math.ceil(innerHeight / blockSize);
-    const shuffledIndexes = shuffle([...Array(nbOfBlocks)].map((_, i) => i));
-    return shuffledIndexes.map((randomIndex: any, index: any) => {
-      return (
-        <motion.div
-          key={index}
-          className={styles.block}
-          variants={anim}
-          initial="initial"
-          animate={isNavigating ? "open" : "closed"}
-          custom={randomIndex}
-        />
-      );
-    });
-  };
+    return () => clearInterval(messageInterval);
+  }, []);
 
   return (
-    <div
-      style={{
-        display: hasCompletedTransition ? "none" : "block", // Hide after animation completes
+    <motion.div
+      variants={slideUp}
+      initial={{
+        borderRadius: "0",
+        boxShadow: "0px",
       }}
+      animate={{
+        borderRadius: isComplete ? "0px" : "0 0 60px 60px",
+        boxShadow: isComplete ? "0px" : "0px 10px 20px rgba(0, 0, 0, 0.1)",
+      }}
+      exit="exit"
+      transition={{
+        duration: 1, // Adjust for smoothness
+        ease: "easeInOut",
+        delay: 5,
+      }}
+      className="h-screen w-screen flex items-center justify-center fixed z-[10000000000000000] overflow-hidden bg-white"
     >
-      {/* Show the page title in the center */}
-      {pageTitle && (
-        <motion.div
-          className={`text-black ${alice.className}`}
-          style={{
-            position: "absolute",
-            top: "50%",
-            left: "50%",
-            transform: "translate(-50%, -50%)",
-            fontSize: "8rem",
-            fontWeight: "bold",
-            textAlign: "center",
-            zIndex: 10,
-            textTransform: "uppercase",
-          }}
-        >
-          {pageTitle}
-        </motion.div>
-      )}
-      <div className={styles.pixelBackground}>
-        {[...Array(20)].map((_, index) => {
-          return (
-            <div key={index} className={styles.column}>
-              {getBlocks()}
-            </div>
-          );
-        })}
-      </div>
-    </div>
+      <WaveForm
+        currentMessage={messages[messageIndex]}
+        isComplete={isComplete}
+      />
+      {isComplete && <RippleEffect />}
+
+      <motion.div
+        className={styles.preloader}
+        initial={{ opacity: 1 }}
+        animate={{ opacity: isComplete ? 0 : 1 }}
+        exit={{ opacity: 0, transition: { duration: 0.2 } }}
+      >
+        {dimension.width > 0 && (
+          <div className={styles.loader}>
+            {[...Array(5)].map((_, i) => (
+              <motion.div
+                key={i}
+                className={styles.bar}
+                style={{ backgroundColor: "rgba(0, 0, 0, 0.1)" }}
+                animate={{
+                  scaleY: [1, 2, 1],
+                }}
+                transition={{
+                  duration: 0.8,
+                  repeat: Infinity,
+                  repeatType: "loop",
+                  delay: i * 0.15,
+                }}
+              />
+            ))}
+          </div>
+        )}
+      </motion.div>
+    </motion.div>
   );
 }
