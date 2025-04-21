@@ -1,6 +1,7 @@
 import styles from "./style.module.scss";
 import { motion } from "framer-motion";
 import { links, footerLinks } from "./data";
+import Link from "next/link";
 import {
   blurSlide,
   bubbleFloat,
@@ -20,14 +21,13 @@ export default function index() {
             <div key={`b_${i}`} className={styles.linkContainer}>
               <motion.div
                 // @ts-ignore
-
                 custom={i}
                 variants={bubbleFloat}
                 initial="initial"
                 animate="enter"
                 exit="exit"
               >
-                <a href={href}>{title}</a>
+                <Link href={href}>{title}</Link>
               </motion.div>
             </div>
           );
@@ -37,17 +37,16 @@ export default function index() {
         {footerLinks.map((link, i) => {
           const { title, href } = link;
           return (
-            <motion.a
+            <motion.div
               variants={slideIn}
               custom={i}
               initial="initial"
               animate="enter"
               exit="exit"
               key={`f_${i}`}
-              href={href}
             >
-              {title}
-            </motion.a>
+              <Link href={href}>{title}</Link>
+            </motion.div>
           );
         })}
       </motion.div>

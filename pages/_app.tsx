@@ -12,6 +12,7 @@ export default function App({ Component, pageProps }: AppProps) {
   const router = useRouter();
   const [hasMounted, setHasMounted] = useState(false);
   const [isComplete, setIsComplete] = useState(true);
+  const [hasVisited, setHasVisited] = useState(false);
 
   useEffect(() => {
     setHasMounted(true);
@@ -25,6 +26,7 @@ export default function App({ Component, pageProps }: AppProps) {
 
     return () => {
       clearTimeout(loadingTimeout);
+      setIsComplete(true);
     };
   }, [router.pathname]);
 
@@ -38,7 +40,7 @@ export default function App({ Component, pageProps }: AppProps) {
         <CustomCursor />
       </div>
       <AnimatePresence mode="wait">
-        {router.pathname !== "/" && isComplete && (
+        {(router.pathname !== "/" || hasVisited) && isComplete && (
           <RouterAnimation isComplete={isComplete} />
         )}
 
@@ -49,7 +51,11 @@ export default function App({ Component, pageProps }: AppProps) {
           exit={{ opacity: 0 }}
         >
           <Header />
-          <Component {...pageProps} />
+          <Component
+            {...pageProps}
+            hasVisited={hasVisited}
+            setHasVisited={setHasVisited}
+          />
         </motion.div>
       </AnimatePresence>
     </>

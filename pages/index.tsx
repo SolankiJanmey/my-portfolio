@@ -22,7 +22,7 @@ export const alice = Alice({
   weight: "400",
 });
 
-export default function Home() {
+export default function Home({ hasVisited, setHasVisited }: any) {
   const [isLoading, setIsLoading] = useState(true);
   const container = useRef(null);
   const { scrollYProgress } = useScroll({
@@ -41,9 +41,13 @@ export default function Home() {
 
     requestAnimationFrame(raf);
 
-    const loadingTimeout = setTimeout(() => {
-      setIsLoading(false);
-    }, 8000);
+    const loadingTimeout = setTimeout(
+      () => {
+        setIsLoading(false);
+        setHasVisited(true);
+      },
+      hasVisited ? 0 : 8000
+    );
     loadingTimeout;
 
     return () => {
@@ -57,7 +61,7 @@ export default function Home() {
       ref={container}
     >
       <AnimatePresence mode="wait">
-        {isLoading && <Preloader />}
+        {isLoading && !hasVisited && <Preloader />}
       </AnimatePresence>
       {!isLoading && (
         <div>
