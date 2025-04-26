@@ -37,16 +37,19 @@ export default function index() {
         {footerLinks.map((link, i) => {
           const { title, href } = link;
           return (
-            <motion.div
+            <motion.a
               variants={slideIn}
               custom={i}
               initial="initial"
               animate="enter"
               exit="exit"
               key={`f_${i}`}
+              href={href}
+              target="_blank"
+              rel="noopener noreferrer"
             >
               <Link href={href}>{title}</Link>
-            </motion.div>
+            </motion.a>
           );
         })}
       </motion.div>
